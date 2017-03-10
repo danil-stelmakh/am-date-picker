@@ -5,9 +5,9 @@
         .module('am.date-picker')
         .controller('amDatePickerDialogCtrl', DialogController);
 
-    DialogController.$inject = ['$timeout', '$mdDialog'];
+    DialogController.$inject = ['$timeout', '$mdDialog', '$mdMedia'];
 
-    function DialogController($timeout, $mdDialog) {
+    function DialogController($timeout, $mdDialog, $mdMedia) {
         var dialog = this,
             delay = 110;
 
@@ -24,6 +24,10 @@
         dialog.monthChanged = true;
         dialog.isTodayDisabled = false;
         dialog.yearSelection = false;
+
+        dialog.atLandscape = function () {
+            return $mdMedia('max-height:500px');
+        };
 
         init();
 

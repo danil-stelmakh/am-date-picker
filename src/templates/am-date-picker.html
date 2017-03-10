@@ -1,7 +1,7 @@
 <div style="outline-style: none;">
     <!-- Date picker input -->
     <div>
-        <md-input-container ng-class="{'md-has-icon': amDatePicker.showInputIcon &&
+        <md-input-container class="am-date-picker" ng-class="{'md-has-icon': amDatePicker.showInputIcon &&
                                                       (amDatePicker.showInputIcon || amDatePicker.allowClear) }">
             <label>{{ amDatePicker.inputLabel }}</label>
             <div class="am-date-picker__calendar-icon" ng-if="amDatePicker.showInputIcon">
@@ -28,117 +28,132 @@
     </div>
 
 
-<script type="text/ng-template" id="am-date-picker_content.tmpl.html">
-    <md-dialog class="am-date-picker__container" aria-label="Datepicker Content" ng-cloak>
-    <div layout="column">
+<script type="text/ng-template" id="am-date-picker_calendar.tmpl.html">
+    <!-- Calendar -->
+    <div class="am-date-picker__calendar am-date-picker__animate-month-change"
+         ng-class="{'next': dialog.next,
+                    'prev': !dialog.next}"
+         ng-if="dialog.monthChanged">
 
-        <!-- Current date -->
+        <!-- Weekdays -->
+        <div class="am-date-picker__weekdays" layout layout-align="space-between">
+            <span ng-repeat="day in dialog.daysOfWeek">{{ day }}</span>
+        </div>
+
+        <!-- Days -->
+        <span class="am-date-picker__empty-days" ng-repeat="x in dialog.emptyFirstDays">&nbsp;</span>
+        <div class="am-date-picker__days">
+            <md-button class="md-primary md-icon-button"
+                ng-class="{'am-date-picker__day--is-selected md-fab' : day.selected,
+                           'am-date-picker__day--is-today': day.today && !day.selected}"
+                ng-repeat="day in dialog.days"
+                ng-disabled="day.disabled"
+                ng-click="dialog.select(day)">{{ day ? day.format('D') : '' }}</md-button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="am-date-picker_month_year.tmpl.html">
+    <div layout="row" layout-align="space-between center" class="am-date-picker__month-year">
+        <md-button ng-click="dialog.previousMonth()"
+                   class="md-icon-button"
+                   aria-label="Prev Month Button">
+            <md-icon aria-label="Prev"
+                     class="am-date-picker__chevron"
+                     md-svg-icon="{{ dialog.prevIcon }}"></md-icon>
+
+        </md-button>
+
+        <md-button ng-click="dialog.displayYearSelection()"
+                   class="md-primary am-date-picker__month-year">
+            {{ dialog.dateMoment.format('MMMM YYYY') }}
+        </md-button>
+
+         <md-button ng-click="dialog.nextMonth()"
+                    class="md-icon-button"
+                    aria-label="Next Month Button">
+            <md-icon aria-label="Next"
+                     class="am-date-picker__chevron"
+                     md-svg-icon="{{ dialog.nextIcon }}"></md-icon>
+        </md-button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="am-date-picker_years.tmpl.html">
+    <div class="am-date-picker__year" ng-repeat="year in dialog.years">
+        <md-button class="md-primary md-icon-button"
+                   ng-class="{ 'am-date-picker__year--is-active md-fab md-mini':
+                                    year == dialog.dateMoment.format('YYYY') }"
+                   ng-click="dialog.selectYear(year)">
+            {{ year }}
+        </md-button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="am-date-picker_actions.tmpl.html">
+    <md-dialog-actions class="am-date-picker__actions">
+        <div layout="row">
+            <md-button ng-click="dialog.today()"
+                       ng-disabled="dialog.isTodayDisabled"
+                       ng-if="dialog.todayButton"
+                       class="md-primary">
+                {{ dialog.todayButton }}
+            </md-button>
+            <span flex></span>
+            <div ng-if="!dialog.yearSelection">
+                <md-button ng-click="dialog.cancel()"
+                           ng-if="dialog.cancelButton"
+                           class="md-primary">
+                    {{ dialog.cancelButton }}
+                </md-button>
+
+                <md-button ng-click="dialog.hide()"
+                           ng-disabled="dialog.dateMoment.disabled"
+                           class="md-primary">
+                    OK
+                </md-button>
+            </div>
+
+            <md-button ng-click="dialog.hideYearSelection()"
+                       ng-if="dialog.yearSelection"
+                       class="md-primary">
+                   {{ dialog.backButtonText }}
+            </md-button>
+        </div>
+    </md-dialog-actions>
+</script>
+
+<script type="text/ng-template" id="am-date-picker_current_date.tmpl.html">
+    <!-- Current date -->
+    <div layout="column">
         <md-toolbar class="am-date-picker__header-current-date">
             <div layout="column" layout-align="center start">
                 <p class="md-subhead">{{ dialog.dateMoment.format('YYYY') }}</p>
                 <h2 class="md-title">{{ dialog.dateMoment.format(dialog.popupDateFormat) }}</h2>
             </div>
         </md-toolbar>
-
     </div>
-
-    <!-- Date picker: content -->
-    <div ng-hide="dialog.yearSelection" class="am-date-picker__content am-date-picker__animate-year-selection">
-        <div layout="row" layout-align="space-between center" class="am-date-picker__month-year">
-            <md-button ng-click="dialog.previousMonth()"
-                       class="md-icon-button"
-                       aria-label="Prev Month Button">
-                <md-icon aria-label="Prev"
-                         class="am-date-picker__chevron"
-                         md-svg-icon="{{ dialog.prevIcon }}"></md-icon>
-
-            </md-button>
-
-            <md-button ng-click="dialog.displayYearSelection()"
-                       class="md-primary am-date-picker__month-year">
-                {{ dialog.dateMoment.format('MMMM YYYY') }}
-            </md-button>
-
-             <md-button ng-click="dialog.nextMonth()"
-                        class="md-icon-button"
-                        aria-label="Next Month Button">
-                <md-icon aria-label="Next"
-                         class="am-date-picker__chevron"
-                         md-svg-icon="{{ dialog.nextIcon }}"></md-icon>
-            </md-button>
-        </div>
-
-        <!-- Calendar -->
-        <div class="am-date-picker__calendar am-date-picker__animate-month-change"
-             ng-class="{'next': dialog.next,
-                        'prev': !dialog.next}"
-             ng-if="dialog.monthChanged">
-
-            <!-- Weekdays -->
-            <div class="am-date-picker__weekdays" layout layout-align="space-between">
-                <span ng-repeat="day in dialog.daysOfWeek">{{ day }}</span>
-            </div>
-
-            <!-- Days -->
-            <span class="am-date-picker__empty-days"
-                  ng-repeat="x in dialog.emptyFirstDays">&nbsp;</span>
-
-            <div class="am-date-picker__days">
-                <md-button class="md-primary md-icon-button"
-                    ng-class="{'am-date-picker__day--is-selected md-fab' : day.selected,
-                               'am-date-picker__day--is-today': day.today && !day.selected}"
-                    ng-repeat="day in dialog.days"
-                    ng-disabled="day.disabled"
-                    ng-click="dialog.select(day)">{{ day ? day.format('D') : '' }}</md-button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Year selection -->
-    <div class="am-date-picker__year-selector am-date-picker__animate-year-selection"
-         ng-show="dialog.yearSelection">
-        <div class="am-date-picker__year"
-             ng-repeat="year in dialog.years">
-            <md-button class="md-primary md-icon-button"
-                       ng-class="{ 'am-date-picker__year--is-active md-fab md-mini':
-                                        year == dialog.dateMoment.format('YYYY') }"
-                       ng-click="dialog.selectYear(year)">
-                {{ year }}
-            </md-button>
-        </div>
-    </div>
-
-    <!--Actions-->
-    <md-dialog-actions layout="row" class="am-date-picker__actions">
-        <md-button ng-click="dialog.today()"
-                   ng-disabled="dialog.isTodayDisabled"
-                   ng-if="dialog.todayButton"
-                   class="md-primary">
-            {{ dialog.todayButton }}
-        </md-button>
-        <span flex></span>
-        <div ng-if="!dialog.yearSelection">
-            <md-button ng-click="dialog.cancel()"
-                       ng-if="dialog.cancelButton"
-                       class="md-primary">
-                {{ dialog.cancelButton }}
-            </md-button>
-
-            <md-button ng-click="dialog.hide()"
-                       ng-disabled="dialog.dateMoment.disabled"
-                       class="md-primary">
-                OK
-            </md-button>
-        </div>
-
-        <md-button ng-click="dialog.hideYearSelection()"
-                   ng-if="dialog.yearSelection"
-                   class="md-primary">
-               {{ dialog.backButtonText }}
-        </md-button>
-    </md-dialog-actions>
-    </md-dialog>
 </script>
 
+<script type="text/ng-template" id="am-date-picker_content.tmpl.html">
+    <md-dialog class="am-date-picker__container" aria-label="Datepicker Content"
+             ng-class="{'am-date-picker__landscape' : dialog.atLandscape()}">
+        <div ng-class="{'layout-row' : dialog.atLandscape(), 'layout-column' : !dialog.atLandscape()}">
+            <ng-include src="'am-date-picker_current_date.tmpl.html'" flex="grow"></ng-include>
+            <div layout="column">
+                <!-- Date picker: content -->
+                <div ng-hide="dialog.yearSelection" class="am-date-picker__content am-date-picker__animate-year-selection">
+                    <ng-include src="'am-date-picker_month_year.tmpl.html'"></ng-include>
+                    <ng-include src="'am-date-picker_calendar.tmpl.html'"></ng-include>
+                </div>
+
+                <!-- Year selection -->
+                <div class="am-date-picker__year-selector am-date-picker__animate-year-selection" ng-show="dialog.yearSelection" ng-cloak>
+                    <ng-include src="'am-date-picker_years.tmpl.html'"></ng-include>
+                </div>
+                <ng-include src="'am-date-picker_actions.tmpl.html'"></ng-include>
+            </div>
+        </div>
+    </md-dialog>
+</script>
 </div>

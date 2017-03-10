@@ -6,9 +6,16 @@ angular
         'ngMessages',
         'am.date-picker',
     ])
-    .config(function($mdThemingProvider) {
+    .config(function($mdThemingProvider, amDatePickerConfigProvider) {
         $mdThemingProvider.theme('default')
-            .primaryPalette('teal')
+            .primaryPalette('teal');
+        amDatePickerConfigProvider.setOptions({
+            popupDateFormat: 'Do of MMMM',
+            calendarIcon: '../dist/images/icons/ic_today_24px.svg',
+            clearIcon: '../dist/images/icons/ic_close_24px.svg',
+            nextIcon: '../dist/images/icons/ic_chevron_right_18px.svg',
+            prevIcon: '../dist/images/icons/ic_chevron_left_18px.svg'
+        });
     })
     .controller('MainCtrl', ['$scope',
         function ($scope) {

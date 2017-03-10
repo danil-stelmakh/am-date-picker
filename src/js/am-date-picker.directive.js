@@ -3,7 +3,7 @@
 
     angular
         .module('am.date-picker')
-        .directive('amDatePicker', amDatePicker)
+        .directive('amDatePicker', amDatePicker);
 
     function amDatePicker() {
         return {

@@ -1,9 +1,29 @@
 @transition-time: 0.25s;
 @half-transition-time: @transition-time / 2;
+@landscape-height: 310px;
 
 .am-date-picker__input {
     cursor: pointer;
 }
+
+md-input-container.am-date-picker.md-has-icon {
+    .am-date-picker__input {
+        padding-left: 28px;
+    }
+
+    label {
+        margin-left: 28px;
+    }
+
+    md-icon {
+        margin-top: 5px;
+    }
+}
+
+md-input-container.am-date-picker.md-has-icon.md-input-has-value label {
+    margin-left: 0px;
+}
+
 
 .am-date-picker__calendar-icon {
     position: absolute;
@@ -50,6 +70,13 @@ md-input-container:hover .am-date-picker__clear-icon {
     }
 }
 
+.am-date-picker__container.am-date-picker__landscape {
+    width: 540px;
+    min-width: 540px;
+    height: @landscape-height;
+    min-height: @landscape-height;
+}
+
 .am-date-picker__header-current-date {
     padding: 15px 20px;
 
@@ -62,6 +89,17 @@ md-input-container:hover .am-date-picker__clear-icon {
         margin: 0;
         font-size: 1.5em;
     }
+
+    width: auto;
+}
+
+.am-date-picker__landscape .am-date-picker__header-current-date {
+    padding: 15px;
+    margin: 0;
+    width: 210px;
+    max-width: 210px;
+    min-height: @landscape-height;
+    height: @landscape-height;
 }
 
 .am-date-picker__content {
@@ -69,6 +107,11 @@ md-input-container:hover .am-date-picker__clear-icon {
     height: 300px;
 }
 
+.am-date-picker__landscape .am-date-picker__content {
+    max-height: 260px;
+    min-height: 260px;
+    height: 260px;
+}
 
 .am-date-picker__month-year {
     .md-icon-button {
@@ -78,6 +121,11 @@ md-input-container:hover .am-date-picker__clear-icon {
         padding: 0;
         margin: 0 6px;
     }
+}
+
+.am-date-picker__landscape .am-date-picker__month-year .md-icon-button {
+    height: 24px;
+    line-height: 20px;
 }
 
 .am-date-picker__chevron {
@@ -101,11 +149,28 @@ md-input-container:hover .am-date-picker__clear-icon {
     @delay: 0.5s;
 }
 
+.am-date-picker__landscape .am-date-picker__calendar {
+    width: 293px;
+    height: auto;
+    max-height: auto;
+}
+
+.am-date-picker__landscape .am-date-picker__days .md-button.md-icon-button {
+    max-height: 34px;
+    max-width: 34px;
+    margin: 0 3px;
+}
+
 .am-date-picker__empty-days {
     float:left;
     width: 31px;
     height: 30px;
     padding: 5px;
+}
+
+.am-date-picker__landscape .am-date-picker__empty-days {
+    width: 31px;
+    height: 24px;
 }
 
 .am-date-picker__days {
@@ -149,6 +214,11 @@ md-input-container:hover .am-date-picker__clear-icon {
     overflow-y: scroll;
     margin: 5px 0;
     height: 290px;
+}
+
+.am-date-picker__landscape .am-date-picker__year-selector {
+    max-height: 252px;
+    min-width: 293px;
 }
 
 
